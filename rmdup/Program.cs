@@ -41,10 +41,11 @@ namespace rmdup
                 if (hashPathMap.ContainsKey(hash))
                 {
                     // Remove duplicates (Preserve shortest path)
-                    if (hashPathMap[hash].Length > file.Length)
+                    string duplicate = hashPathMap[hash];
+                    if (duplicate.Length > file.Length)
                     {
-                        File.Delete(hashPathMap[hash]);
-                        Console.WriteLine(hashPathMap[hash] + " removed.");
+                        File.Delete(duplicate);
+                        Console.WriteLine(duplicate + " removed.");
                         hashPathMap[hash] = file;
                     }
                     else
@@ -55,7 +56,7 @@ namespace rmdup
                 }
                 else
                 {
-                    hashPathMap.Add(hash, path);
+                    hashPathMap.Add(hash, file);
                 }
                 
             }
@@ -67,6 +68,8 @@ namespace rmdup
 
         static void Main(string[] args)
         {
+            args = new string[1];
+            args[0] = "F:\\";
             if (args.Length == 0)
             {
                 Console.WriteLine("A path must be specified");
@@ -75,6 +78,7 @@ namespace rmdup
             {
                 rmdup(args[0]);
             }
+            Console.ReadLine();
         }
     }
 }
