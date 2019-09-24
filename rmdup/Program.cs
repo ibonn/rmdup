@@ -30,7 +30,10 @@ namespace rmdup
         }
 
         private static Dictionary<string, string> hashPathMap = new Dictionary<string, string>();
-
+        private static int filesListed = 0;
+        private static int filesRemoved = 0;
+        private static long bytesRemoved = 0;
+       
         private static void rmdup(string path)
         {
             foreach (string file in Directory.GetFiles(path))
@@ -42,6 +45,7 @@ namespace rmdup
                 {
                     // Remove duplicates (Preserve shortest path)
                     string duplicate = hashPathMap[hash];
+
                     if (duplicate.Length > file.Length)
                     {
                         File.Delete(duplicate);
@@ -53,12 +57,14 @@ namespace rmdup
                         File.Delete(file);
                         Console.WriteLine(file + " removed.");
                     }
+                    filesRemoved++;
+                    bytesRemoved += bytes.Length;
                 }
                 else
                 {
                     hashPathMap.Add(hash, file);
                 }
-                
+                filesListed++;
             }
             foreach (string dir in Directory.GetDirectories(path))
             {
@@ -68,8 +74,6 @@ namespace rmdup
 
         static void Main(string[] args)
         {
-            args = new string[1];
-            args[0] = "F:\\";
             if (args.Length == 0)
             {
                 Console.WriteLine("A path must be specified");
@@ -78,7 +82,8 @@ namespace rmdup
             {
                 rmdup(args[0]);
             }
-            Console.ReadLine();
+            Console.WriteLine(filesListed + " files listed. " + filesRemoved + " files (" + filesRemoved * 100.0 / filesListed + "%) removed");
+            Console.WriteLine(filesRemoved + " files (" + bytesRemoved + " bytes) removed.");
         }
     }
 }
